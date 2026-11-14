@@ -1,3 +1,4 @@
+/* global __ENV */
 import http from 'k6/http';
 import { check } from 'k6';
 
@@ -27,7 +28,7 @@ export default function () {
     'pedido criado (201)': (r) => r.status === 201,
     'total com desconto correto': (r) => {
       try { return JSON.parse(r.body).total === 180; }
-      catch (_) { return false; }
+      catch { return false; }
     },
   });
 }
