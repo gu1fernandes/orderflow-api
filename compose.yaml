@@ -1,0 +1,16 @@
+
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_PATH: /app/data/orderflow.db
+    volumes:
+      - orderflow_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  orderflow_data:
