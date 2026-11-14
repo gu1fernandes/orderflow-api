@@ -66,9 +66,40 @@ O código é organizado em camadas: `domain` (entidades e regras), `application`
 
 Veja [ADR-001](docs/adr/001-arquitetura.md), [OpenAPI](docs/openapi.yaml), [desempenho](docs/desempenho.md) e [registro de IA](docs/ia.md).
 
-## Observabilidade e SLO
+## Observabilidade
 
-A API utiliza logs do Fastify, que podem ser inspecionados com `docker compose logs api`. O endpoint `/health` permite uma verificação básica de disponibilidade. Para a avaliação inicial de desempenho, o teste k6 mede `http_req_duration` (incluindo p95) e `http_req_failed`. O SLO proposto é p95 inferior a 500 ms e taxa de falhas inferior a 1% no cenário de smoke test local. Trata-se de um objetivo de teste, não de garantia de produção.
+A OrderFlow API utiliza o sistema de logs estruturados do Fastify, baseado no Pino, para registrar requisições e respostas em formato JSON.
+
+### Endpoint de métricas
+
+**GET `/metrics`**
+
+Retorna a quantidade de pedidos criados com sucesso desde a inicialização da aplicação.
+
+Exemplo de resposta:
+
+```json
+{
+  "orders_created_total": 1
+}
+```
+
+O contador é incrementado quando `POST /orders` retorna HTTP 201.
+
+**Limitação:** a métrica é mantida em memória e reiniciada quando a aplicação é reiniciada. Ela não representa a quantidade histórica de pedidos armazenados no SQLite.
+
+### Indicadores de desempenho
+
+O projeto também utiliza Grafana k6 para verificar a latência e a taxa de falhas da API.
+
+No smoke test local, com um usuário virtual durante 30 segundos, foram obtidos:
+
+- 6.506 requisições HTTP.
+- Latência p95 de 4,57 ms.
+- Taxa de falhas HTTP de 0%.
+- Todos os thresholds aprovados.
+
+Os detalhes estão em `docs/desempenho.md`.
 
 ## Limitações
 

@@ -19,6 +19,27 @@ paths:
                 properties:
                   status: { type: string, example: ok }
                   service: { type: string, example: orderflow-api }
+  /metrics:
+    get:
+      summary: Consultar metricas da aplicacao
+      description: >
+        Retorna o numero de pedidos criados com sucesso
+        desde a inicializacao do processo. O contador
+        fica em memoria e reinicia com a aplicacao.
+      responses:
+        '200':
+          description: Metricas obtidas com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - orders_created_total
+                properties:
+                  orders_created_total:
+                    type: integer
+                    minimum: 0
+                    example: 1
   /orders:
     post:
       summary: Criar pedido
